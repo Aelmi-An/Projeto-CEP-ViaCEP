@@ -1,38 +1,42 @@
-const url=  'viacep.com.br/ws/agshdhaskd/json/';
+//Ambas as constantes recebem itens do HTML
+const CEP = document.getElementById("CEPzin");
+const Resposta = document.getElementById("espaçoderesposta");
 
-async function BuscaCEP() {
-    const resultado = document.getElementById('espaçoderesposta');
-
+//Função inicial de contato com a API
+async function buscarPorCEP(CEPzin) {
     try {
-    // 1. Faz a requisição à API
-        const Pedido = await fetch(url);
+        const resposta = await fetch(`https://viacep.com.br/ws/${CEPzin}/json/`);
+        const dados = await resposta.json();
         
-        // 2. Verifica se a resposta foi bem-sucedida
-        if (!Pedido.ok) {
-            throw new Error(`Erro na requisição: ${response.status}`);
+        if (dados.erro) {
+            Resposta.innerHTML = "CEP não encontrado!";
+            return;
         }
-
-        // 3. Converte os dados para formato JSON
-        const CEPs = await Pedido.json();
-
-        // Vamos exibir apenas os 10 primeiros posts para o exemplo
-        CEPs.forEach(post => {
-            const postElement = document.createElement('div');
-            postElement.classList.add('post');
-
-            postElement.innerHTML = `
-                <h2>${post.title}</h2>
-                <p>${post.body}</p>
-            `;
-
-            container.appendChild(postElement);
-        });
-
-    } catch (error) {
-        console.error('Erro ao buscar CPF:', error);
-        container.innerHTML = '<p style="color: red;">Erro ao carregar os dados de localização.</p>';
+        
+        Resposta.innerHTML = `
+            <strong>Logradouro:</strong> ${dados.logradouro}<br>
+            <strong>Bairro:</strong> ${dados.bairro}<br>
+            <strong>Cidade:</strong> ${dados.localidade} - ${dados.uf}
+        `;
+    } catch (erro) {
+        console.error("Erro na requisição por CEP:", erro);
+        Resposta.innerHTML = "Erro ao buscar o CEP.";
     }
 }
 
-// Chama a função ao carregar a página
-fetchPosts();
+//
+function processarBusca() {
+    const input = document.querySelector('#CEPzin').value.trim();
+    const Numerosdocep = input.replace(/\D/g, '');
+
+    if (Numerosdocep.length === 8) {
+        buscarPorCEP(Numerosdocep);
+    } else {
+        buscarPorNome(input);
+    }
+}
+
+document.getElementById("Limpar").onclick = function() {
+    CEP.value = "";
+    Resposta.innerHTML = "";
+};
