@@ -5,13 +5,46 @@ body {
     align-items: center; 
     justify-content: center; 
     padding: 20px;
-    gap: 5px; 
-};
+    gap: 10px; 
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
 
+h1 {
+    color: #333;
+}
 
 input, 
 button {
     width: 300px;
     padding: 12px;
     font-size: 16px;
-};
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#Limpar {
+    background-color: #999;
+}
+
+#Limpar:hover {
+    background-color: #777;
+}
+
+#espaçoderesposta {
+    width: 300px;
+    padding: 12px;
+    font-size: 16px;
+    text-align: left;
+}
