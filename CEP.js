@@ -32,7 +32,7 @@ function processarBusca() {
     if (Numerosdocep.length === 8) {
         buscarPorCEP(Numerosdocep);
     } else {
-        buscarPorNome(input);
+        Resposta.innerHTML = "Digite um CEP válido com 8 dígitos.";
     }
 }
 
