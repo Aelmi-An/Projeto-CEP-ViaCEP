@@ -7,6 +7,7 @@ body {
     min-height: 100vh;
     margin: 0;
     padding: 20px;
+    box-sizing: border-box;
     gap: 10px;
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -19,7 +20,8 @@ h1 {
 
 /* 2. Seções (Busca por CEP, Busca por Endereço, Histórico) */
 section {
-    width: 320px;
+    width: 100%;
+    max-width: 320px;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -60,7 +62,8 @@ button:hover {
 }
 
 #Limpar {
-    width: 320px;
+    width: 100%;
+    max-width: 320px;
     background-color: #999;
 }
 
@@ -70,7 +73,8 @@ button:hover {
 
 /* 4. Resposta e Histórico */
 #espaçoderesposta {
-    width: 320px;
+    width: 100%;
+    max-width: 320px;
     padding: 12px;
     font-size: 16px;
     text-align: left;
