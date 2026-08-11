@@ -1,9 +1,7 @@
-//Ambas as constantes recebem itens do HTML
 const CEP = document.getElementById("CEPzin");
 const Resposta = document.getElementById("espaçoderesposta");
 const Historico = document.getElementById("historico");
 
-//Função inicial de contato com a API
 async function buscarPorCEP(CEPzin) {
     try {
         const resposta = await fetch(`https://viacep.com.br/ws/${CEPzin}/json/`);
@@ -21,46 +19,47 @@ async function buscarPorCEP(CEPzin) {
         `;
         salvarHistorico(dados.cep);
     } catch (erro) {
-        console.error("Erro na requisição por CEP:", erro);
+        console.log(erro);
         Resposta.innerHTML = "Erro ao buscar o CEP.";
     }
 }
 
-//Busca CEP a partir de UF, Cidade e Logradouro
 async function buscarPorEndereco() {
     const uf = document.getElementById("UF").value;
     const cidade = document.getElementById("Cidade").value.trim();
     const logradouro = document.getElementById("Logradouro").value.trim();
 
-    if (!uf || cidade.length < 3 || logradouro.length < 3) {
-        Resposta.innerHTML = "Preencha UF, Cidade e Logradouro (mín. 3 letras).";
+    if (uf == "" || cidade.length < 3 || logradouro.length < 3) {
+        Resposta.innerHTML = "Preencha UF, Cidade e Logradouro direito";
         return;
     }
 
     try {
-        const url = `https://viacep.com.br/ws/${uf}/${encodeURIComponent(cidade)}/${encodeURIComponent(logradouro)}/json/`;
-        const resposta = await fetch(url);
+        const resposta = await fetch(`https://viacep.com.br/ws/${uf}/${encodeURIComponent(cidade)}/${encodeURIComponent(logradouro)}/json/`);
         const dados = await resposta.json();
 
-        if (!dados.length) {
+        if (dados.length == 0) {
             Resposta.innerHTML = "Endereço não encontrado!";
             return;
         }
 
-        Resposta.innerHTML = dados.map(item => `
-            <strong>CEP:</strong> ${item.cep}<br>
-            <strong>Logradouro:</strong> ${item.logradouro}<br>
-            <strong>Bairro:</strong> ${item.bairro}<br>
-            <strong>Cidade:</strong> ${item.localidade} - ${item.uf}<hr>
-        `).join("");
-        dados.forEach(item => salvarHistorico(item.cep));
+        let html = "";
+        for (let i = 0; i < dados.length; i++) {
+            html += `
+                <strong>CEP:</strong> ${dados[i].cep}<br>
+                <strong>Logradouro:</strong> ${dados[i].logradouro}<br>
+                <strong>Bairro:</strong> ${dados[i].bairro}<br>
+                <strong>Cidade:</strong> ${dados[i].localidade} - ${dados[i].uf}<hr>
+            `;
+            salvarHistorico(dados[i].cep);
+        }
+        Resposta.innerHTML = html;
     } catch (erro) {
-        console.error("Erro na requisição por endereço:", erro);
+        console.log(erro);
         Resposta.innerHTML = "Erro ao buscar o endereço.";
     }
 }
 
-//Decide qual busca fazer com base no CEP digitado
 function processarBusca() {
     const input = CEP.value.trim();
     const Numerosdocep = input.replace(/\D/g, '');
@@ -72,10 +71,9 @@ function processarBusca() {
     }
 }
 
-//Salva o CEP pesquisado no localStorage e atualiza a lista
 function salvarHistorico(cep) {
     let lista = JSON.parse(localStorage.getItem("historicoCEP")) || [];
-    if (!lista.includes(cep)) {
+    if (lista.indexOf(cep) === -1) {
         lista.unshift(cep);
         lista = lista.slice(0, 10);
         localStorage.setItem("historicoCEP", JSON.stringify(lista));
@@ -83,19 +81,18 @@ function salvarHistorico(cep) {
     carregarHistorico();
 }
 
-//Exibe o histórico salvo e permite clicar para repetir a busca
 function carregarHistorico() {
     const lista = JSON.parse(localStorage.getItem("historicoCEP")) || [];
     Historico.innerHTML = "";
-    lista.forEach(cep => {
+    for (let i = 0; i < lista.length; i++) {
         const li = document.createElement("li");
-        li.textContent = cep;
-        li.onclick = () => {
-            CEP.value = cep;
-            buscarPorCEP(cep.replace(/\D/g, ''));
+        li.textContent = lista[i];
+        li.onclick = function() {
+            CEP.value = lista[i];
+            buscarPorCEP(lista[i].replace(/\D/g, ''));
         };
         Historico.appendChild(li);
-    });
+    }
 }
 
 document.addEventListener("DOMContentLoaded", carregarHistorico);
