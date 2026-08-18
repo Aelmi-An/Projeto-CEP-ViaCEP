@@ -30,7 +30,7 @@ async function buscarPorEndereco() {
     const cidade = document.getElementById("Cidade").value.trim();
     const logradouro = document.getElementById("Logradouro").value.trim();
 
-    // SE uf for nulo, cidade, bairro ou logradouro forem - de 3 dígitos, exibe pedido de reformulação
+    // Se uf for nulo, cidade, bairro ou logradouro forem - de 3 dígitos, exibe pedido de reformulação
     if (uf == "" || cidade.length < 3 || logradouro.length < 3) {
         Resposta.innerHTML = "Preencha UF, Cidade, Bairro e Logradouro novamente :(";
         return;
